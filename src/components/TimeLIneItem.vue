@@ -1,7 +1,7 @@
-<script setup>
+ <script setup>
 
 import Select from '../components/Select.vue'
-
+import { HOURS_IN_DAY } from '../constants'
 const options = [
   { value: 1, label: 'Coding'},
   { value: 2, label: 'Reading'},
@@ -13,7 +13,10 @@ const selectedActivityId = 2
 const props = defineProps({
   timelineItem: {
     required: true,
-    type: Object
+    type: Object,
+    validator({ hour }) {
+      return typeof hour === 'number' && hour >= 0 && hour < HOURS_IN_DAY
+    }
   }
 })
 
