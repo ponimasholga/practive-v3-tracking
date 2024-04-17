@@ -1,25 +1,24 @@
- <script setup>
-
+<script setup>
+import { ref } from 'vue'
 import Select from '../components/Select.vue'
-import { HOURS_IN_DAY } from '../constants'
+
+
+import { isTimelineValid } from '../validators'
 const options = [
   { value: 1, label: 'Coding'},
   { value: 2, label: 'Reading'},
   { value: 3, label: 'Trainig'}
 ]
 
-const selectedActivityId = 2
+const selectedActivityId = ref(1)
 
 const props = defineProps({
   timelineItem: {
     required: true,
     type: Object,
-    validator({ hour }) {
-      return typeof hour === 'number' && hour >= 0 && hour < HOURS_IN_DAY
-    }
+    validator: isTimelineValid
   }
 })
-
 
 const hourLinkClasses = [
   'absolute -top-4 left-1/2 -translate-x-1/2 rounded px-2 font-mono text-lg',
@@ -37,6 +36,11 @@ const hourLinkClasses = [
       :class="hourLinkClasses">
       {{ timelineItem.hour }}:00
     </a>
-    <Select :selected="selectedActivityId" :options="options" placeholder="Rest"/>
+    <Select 
+    :selected="selectedActivityId" 
+    :options="options" 
+    placeholder="Rest"
+    @select="selectedActivityId = $event"
+    />
   </li>
 </template>
