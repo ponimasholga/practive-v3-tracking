@@ -31,10 +31,11 @@ const isNotSelected = computed(() => {
 <template>
 	<div class="flex gap-2">
 
-		<Button @click="emit('select' , null)">
+	<Button @click="emit('select' , null)">
       <XMarkIcon class="h-8"/>
-	  </Button>
-		<!-- Спросить про преобразования в число через + -->
+	</Button>
+	
+	<!-- Спросить про преобразования в число через + -->
     <select
       class="w-full truncate rounded bg-gray-100 py-1 px-2 text-2xl"
       @change="emit('select', +$event.target.value)" 
