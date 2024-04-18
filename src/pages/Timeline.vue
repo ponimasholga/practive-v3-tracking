@@ -1,11 +1,15 @@
 <script setup>
 import TimeLIneItem from '../components/TimeLIneItem.vue'
-import { isTimelineItemValid } from '../validators'
+import { isTimelineItemValid, validateSelectOptions } from '../validators'
 defineProps({
   timelineItems: {
     required: true,
     type: Array,
-    validator: isTimelineItemValid
+  },
+  activitySelectOptions: {
+    required: true,
+    type: Array,
+    validator: validateSelectOptions
   }
 })
 </script>

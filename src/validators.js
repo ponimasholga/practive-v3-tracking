@@ -56,7 +56,7 @@ function isNumber(value) {
 }
 
 function isSelectOptionValid({ value, label }) {
-  return (isNumber(value) || isNotEmptyString(value)) && isNotEmptyString(label)
+  return isNumber(value) && isNotEmptyString(label)
 }
 
 function isBetween(value, start, end) {

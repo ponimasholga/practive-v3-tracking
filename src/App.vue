@@ -1,7 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import { PAGE_TIMELINE, PAGE_ACTIVITIES, PAGE_PROGRESS } from './constants'
-import { normalizePageHash, generateTimelineItems } from './functions'
+import {
+  normalizePageHash,
+  generateTimelineItems,
+  generateActivitySelectOptions
+} from './functions'
 import Header from './components/Header.vue'
 import Nav from './components/Nav.vue'
 import Timeline from './pages/Timeline.vue'
@@ -13,6 +17,9 @@ const currentPage = ref(normalizePageHash())
 const timelineItems = generateTimelineItems()
 
 const activities = ['Coding', 'Reading', 'Trainig']
+
+const activitySelectOptions = generateActivitySelectOptions(activities)
+
 
 function goTo(page) {
   currentPage.value = page
@@ -27,7 +34,11 @@ function goTo(page) {
     />
 
     <main class="flex flex-grow flex-col">
-      <Timeline v-show="currentPage === PAGE_TIMELINE" :timeline-items="timelineItems"/>
+      <Timeline 
+      v-show="currentPage === PAGE_TIMELINE"
+      :timeline-items="timelineItems"
+      :activity-select-options="activitySelectOptions"
+    />
       <Activities v-show="currentPage === PAGE_ACTIVITIES" :activities="activities"/>
       <Progress v-show="currentPage === PAGE_PROGRESS"/>
     </main>

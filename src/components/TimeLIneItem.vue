@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Select from '../components/Select.vue'
 import TimelineHour from '../components/TimelineHour.vue'
 
-import { isTimelineItemValid } from '../validators'
+import { isTimelineItemValid, validateSelectOptions} from '../validators'
 
 const options = [
   { value: 1, label: 'Coding'},
@@ -18,6 +18,11 @@ defineProps({
     required: true,
     type: Object,
     validator: isTimelineItemValid
+  },
+  activitySelectOptions: {
+    required: true,
+    type: Array,
+    validator: validateSelectOptions
   }
 })
 
@@ -30,7 +35,7 @@ defineProps({
     <TimelineHour :hour="timelineItem.hour"/>
     <Select 
     :selected="selectedActivityId" 
-    :options="options" 
+    :options="activitySelectOptions" 
     placeholder="Rest"
     @select="selectedActivityId = $event"
     />
