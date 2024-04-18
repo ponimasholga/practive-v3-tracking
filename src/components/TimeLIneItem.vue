@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Select from '../components/Select.vue'
 
 
-import { isTimelineValid } from '../validators'
+import { isTimelineItemValid } from '../validators'
 const options = [
   { value: 1, label: 'Coding'},
   { value: 2, label: 'Reading'},
@@ -16,7 +16,7 @@ const props = defineProps({
   timelineItem: {
     required: true,
     type: Object,
-    validator: isTimelineValid
+    validator: isTimelineItemValid
   }
 })
 
