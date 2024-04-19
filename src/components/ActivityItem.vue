@@ -9,7 +9,7 @@ import { isActivityValid, isUndefined } from '../validators'
 defineProps({
   activity: {
     required: true,
-    type: String,
+    type: Object,
     validator: isActivityValid
   }
 })
@@ -27,7 +27,7 @@ const secondsToComplete = ref(null)
       <Button :type="BUTTON_TYPE_DANGER" @click="emit('delete')">
         <TrashIcon class="h-8"/>
       </Button>
-      <span class="truncate text-x1">{{activity}}</span>
+      <span class="truncate text-x1">{{activity.name}}</span>
     </div>
     <div>
       <Select 

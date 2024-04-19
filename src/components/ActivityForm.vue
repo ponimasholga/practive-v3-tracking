@@ -1,6 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import { PlusIcon } from '@heroicons/vue/24/solid'
+import { id } from '../functions'
 import Button from '../components/Button.vue'
 import { isActivityValid } from '../validators'
 
@@ -8,12 +9,16 @@ const emit = defineEmits({
   submit: isActivityValid
 })
 
-const activity = ref('')
+const name = ref('')
 
 async function submit() {
-  emit('submit', activity.value);
+  emit('submit', {
+    id: id(),
+    name: name.value,
+    secondsToComplete: 0
+  })
 
-  activity.value = ''
+  name.value = ''
 
   await nextTick()
 
@@ -25,12 +30,11 @@ async function submit() {
   <form @submit.prevent="submit" class="sticky bottom-[57px] flex gap-2 border-t bg-white p-4">
     <input 
       type="text"
+      v-model="name"
       placeholder="Activity name"
-      class="w-full rounded border px-4 text-x1" 
-      :value="activity" 
-      @input="activity = $event.target.value"
+      class="w-full rounded border px-4 text-x1"
     >
-    <Button :disabled="activity.trim() === ''">
+    <Button :disabled="name.trim() === ''">
       <PlusIcon class="h-8"/>
     </Button>
   </form>
