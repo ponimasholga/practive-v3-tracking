@@ -3,7 +3,9 @@ import { computed } from 'vue'
 import Button from '../components/Button.vue'
 import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { validateSelectOptions, isUndefinedOrNull, isNumberOrNull } from '../validators'
-//defineProps(['selected', 'options', 'placeholder'])
+import { 
+  BUTTON_TYPE_NEUTRAL
+} from '../constants'
 
 const props = defineProps({
 	selected: Number,
@@ -31,7 +33,7 @@ const isNotSelected = computed(() => {
 <template>
 	<div class="flex gap-2">
 
-	<Button @click="emit('select' , null)">
+	<Button :type="BUTTON_TYPE_NEUTRAL" @click="emit('select' , null)">
       <XMarkIcon class="h-8"/>
 	</Button>
 
