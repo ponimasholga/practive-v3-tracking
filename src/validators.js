@@ -47,7 +47,7 @@ function isNotEmptyString(value) {
   return isString(value) && value.length > 0
 }
 
-function isUndefined(value) {
+export function isUndefined(value) {
   return value === undefined
 }
 
