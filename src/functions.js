@@ -1,7 +1,9 @@
 import { 
   PAGE_TIMELINE,
   HOURS_IN_DAY,
-  SECONDS_IN_HOUR
+  SECONDS_IN_HOUR,
+  SECONDS_IN_MINUTE,
+  MINUTES_IN_HOUR,
 } from './constants'
 import { isPageValid } from './validators'
 
@@ -41,3 +43,17 @@ export function generateTimelineItems() {
 
 export function generateActivitySelectOptions(activities) {
   return activities.map((activity) => ({ value: activity.id, label: activity.name }))}
+
+export function generatePreiodSelectOptionsLabel(periodsInMinutes) {
+  const hours = Math.floor(periodsInMinutes / MINUTES_IN_HOUR).toString().padStart(2, 0)
+  const minutes = (periodsInMinutes % MINUTES_IN_HOUR).toString().padStart(2, 0)
+  
+  return `${hours}:${minutes}`
+}
+
+export function generatePeriodSelectedOptions(periodsInMinutes) {
+  return periodsInMinutes.map((periodsInMinutes) => ({
+    value: periodsInMinutes * SECONDS_IN_MINUTE,
+    label: generatePreiodSelectOptionsLabel(periodsInMinutes)
+  }))
+}  
