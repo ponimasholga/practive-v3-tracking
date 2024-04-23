@@ -1,23 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { NULLABLE_ACTIVITY } from '../constants'
+import {
+  isTimelineItemValid,
+  isActivityValid,
+  validateSelectOptions,
+  validateActivities
+} from '../validators'
 import Select from '../components/Select.vue'
 import TimelineHour from '../components/TimelineHour.vue'
 
-import { isTimelineItemValid, validateSelectOptions} from '../validators'
-
-const options = [
-  { value: 1, label: 'Coding'},
-  { value: 2, label: 'Reading'},
-  { value: 3, label: 'Trainig'}
-]
-
-const selectedActivityId = ref(1)
-
-defineProps({
+const props = defineProps({
   timelineItem: {
     required: true,
     type: Object,
     validator: isTimelineItemValid
+  },
+  activities: {
+    required: true,
+    type: Array,
+    validator: validateActivities
   },
   activitySelectOptions: {
     required: true,
@@ -26,18 +27,27 @@ defineProps({
   }
 })
 
+const emit = defineEmits({
+  selectActivity: isActivityValid
+})
 
+function selectActivity(id) {
+  emit('selectActivity', findActivityById(id))
+}
+
+function findActivityById(id) {
+  return props.activities.find((activity) => activity.id === id) || NULLABLE_ACTIVITY
+}
 </script>
 
 <template>
-  <li 
-    class="relative flex flex-col gap-2 border-t border-gray-200 py-10 px-4">
-    <TimelineHour :hour="timelineItem.hour"/>
-    <Select 
-    :selected="selectedActivityId" 
-    :options="activitySelectOptions" 
-    placeholder="Rest"
-    @select="selectedActivityId = $event"
+  <li class="relative flex flex-col gap-2 border-t border-gray-200 py-10 px-4">
+    <TimelineHour :hour="timelineItem.hour" />
+    <Select
+      placeholder="Rest"
+      :selected="timelineItem.activityId"
+      :options="activitySelectOptions"
+      @select="selectActivity"
     />
   </li>
 </template>

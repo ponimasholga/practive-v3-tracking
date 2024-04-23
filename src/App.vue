@@ -30,7 +30,21 @@ function createActivity(activity) {
 }
 
 function deleteActivity(activity) {
+  timelineItems.value.forEach((timelineItem) => {
+    if (timelineItem.activityId === activity.id) {
+      timelineItem.activityId = null
+    }
+  })
+
   activities.value.splice(activities.value.indexOf(activity), 1)
+}
+
+function setTimelineItemActivity(timelineItem, activity) {
+  timelineItem.activityId = activity.id
+}
+
+function setActivitySecondsToComplete(activity, secondsToComplete) {
+  activity.secondsToComplete = secondsToComplete
 }
 </script>
 
@@ -42,15 +56,18 @@ function deleteActivity(activity) {
 
     <main class="flex flex-grow flex-col">
       <Timeline 
-      v-show="currentPage === PAGE_TIMELINE"
-      :timeline-items="timelineItems"
-      :activity-select-options="activitySelectOptions"
-    />
+        v-show="currentPage === PAGE_TIMELINE"
+        :timeline-items="timelineItems"
+        :activities="activities"
+        :activity-select-options="activitySelectOptions"
+        @set-timeline-item-activity="setTimelineItemActivity"
+      />
       <Activities 
-      v-show="currentPage === PAGE_ACTIVITIES"
-      :activities="activities"
-      @delete-activity="deleteActivity"
-      @create-activity="createActivity"
+        v-show="currentPage === PAGE_ACTIVITIES"
+        :activities="activities"
+        @create-activity="createActivity"
+        @delete-activity="deleteActivity"
+        @set-activity-seconds-to-complete="setActivitySecondsToComplete"
       />
       <Progress v-show="currentPage === PAGE_PROGRESS"/>
     </main>
