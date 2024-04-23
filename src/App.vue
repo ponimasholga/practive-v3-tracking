@@ -1,11 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { PAGE_TIMELINE, PAGE_ACTIVITIES, PAGE_PROGRESS } from './constants'
 import {
   normalizePageHash,
   generateTimelineItems,
-  generateActivitySelectOptions,
-  generateActivities
+  generateActivities,
+  generateActivitySelectOptions
 } from './functions'
 import Header from './components/Header.vue'
 import Nav from './components/Nav.vue'
@@ -15,13 +15,23 @@ import Progress from './pages/Progress.vue'
 
 const currentPage = ref(normalizePageHash())
 
-const timelineItems = generateTimelineItems()
-
 const activities = ref(generateActivities())
 
-const activitySelectOptions = generateActivitySelectOptions(activities.value)
+const timelineItems = ref(generateTimelineItems(activities.value))
+
+const timeline = ref()
+
+const activitySelectOptions = computed(() => generateActivitySelectOptions(activities.value))
 
 function goTo(page) {
+  if (currentPage.value === PAGE_TIMELINE && page === PAGE_TIMELINE) {
+    timeline.value.scrollToHour()
+  }
+
+  if (page !== PAGE_TIMELINE) {
+    document.body.scrollIntoView()
+  }
+
   currentPage.value = page
 }
 
@@ -33,6 +43,7 @@ function deleteActivity(activity) {
   timelineItems.value.forEach((timelineItem) => {
     if (timelineItem.activityId === activity.id) {
       timelineItem.activityId = null
+      timelineItem.activitySeconds = 0
     }
   })
 
@@ -49,30 +60,27 @@ function setActivitySecondsToComplete(activity, secondsToComplete) {
 </script>
 
 <template>
-  <div>
-    <Header 
-      @navigate="goTo($event)"
+  <Header @navigate="goTo($event)" />
+
+  <main class="flex flex-grow flex-col">
+    <Timeline
+      v-show="currentPage === PAGE_TIMELINE"
+      :timeline-items="timelineItems"
+      :activities="activities"
+      :activity-select-options="activitySelectOptions"
+      :current-page="currentPage"
+      ref="timeline"
+      @set-timeline-item-activity="setTimelineItemActivity"
     />
+    <Activities
+      v-show="currentPage === PAGE_ACTIVITIES"
+      :activities="activities"
+      @create-activity="createActivity"
+      @delete-activity="deleteActivity"
+      @set-activity-seconds-to-complete="setActivitySecondsToComplete"
+    />
+    <Progress v-show="currentPage === PAGE_PROGRESS" />
+  </main>
 
-    <main class="flex flex-grow flex-col">
-      <Timeline 
-        v-show="currentPage === PAGE_TIMELINE"
-        :timeline-items="timelineItems"
-        :activities="activities"
-        :activity-select-options="activitySelectOptions"
-        @set-timeline-item-activity="setTimelineItemActivity"
-      />
-      <Activities 
-        v-show="currentPage === PAGE_ACTIVITIES"
-        :activities="activities"
-        @create-activity="createActivity"
-        @delete-activity="deleteActivity"
-        @set-activity-seconds-to-complete="setActivitySecondsToComplete"
-      />
-      <Progress v-show="currentPage === PAGE_PROGRESS"/>
-    </main>
-
-    <Nav :current-page="currentPage" @navigate="goTo($event)"/>
-    
-  </div>
+  <Nav :current-page="currentPage" @navigate="goTo($event)" />
 </template>

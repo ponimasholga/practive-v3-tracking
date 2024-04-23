@@ -4,6 +4,7 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_MINUTE,
   MINUTES_IN_HOUR,
+  MILLISECONDS_IN_SECOND,
 } from './constants'
 import { isPageValid } from './validators'
 
@@ -19,6 +20,16 @@ export function normalizePageHash() {
   return PAGE_TIMELINE
 }
 
+export function formatSeconds(seconds) {
+  const date = new Date()
+
+  date.setTime(Math.abs(seconds) * MILLISECONDS_IN_SECOND);
+
+  const utc = date.toUTCString()
+
+  return utc.substring(utc.indexOf(':') - 2, utc.indexOf(':') + 6)
+}
+
 export function generateActivities() {
   return ['Coding', 'Reading', 'Training'].map((name, hours) => ({
     id: id(),
@@ -31,11 +42,18 @@ export function id() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2)
 }
 
-export function generateTimelineItems() {
+export function generateTimelineItems(activities) {
+  return [...Array(HOURS_IN_DAY).keys()].map((hour) => ({
+    hour,
+    activityId: hour % 4 === 0 ? null : activities[hour % 2].id,
+    activitySeconds: hour % 4 === 0 ? 0 : (15 * SECONDS_IN_MINUTE * hour) % SECONDS_IN_HOUR
+  }))
+
   const timelineItems = []
 
   for (let hour = 0; hour < HOURS_IN_DAY; hour++) {
-    timelineItems.push({ hour })
+    timelineItems.push({ 
+})
   }
 
   return timelineItems
