@@ -1,15 +1,21 @@
 <script setup>
-import { PERIOD_SELECT_OPTIONS, BUTTON_TYPE_DANGER , BUTTON_TYPE_NEUTRAL } from '../constants'
-import Button from '../components/Button.vue'
-import Select from '../components/Select.vue'
 import { TrashIcon } from '@heroicons/vue/24/outline'
-import { isActivityValid, isUndefined, isNumber, isNumberOrNull } from '../validators'
+import { PERIOD_SELECT_OPTIONS, BUTTON_TYPE_DANGER } from '../constants'
+import { isActivityValid, isUndefined, isNumber, validateTimelineItems } from '../validators'
+import Button from './Button.vue'
+import Select from './Select.vue'
+import ActivitySecondsToComplete from './ActivitySecondsToComplete.vue'
 
 defineProps({
   activity: {
     required: true,
     type: Object,
     validator: isActivityValid
+  },
+  timelineItems: {
+    required: true,
+    type: Array,
+    validator: validateTimelineItems
   }
 })
 
@@ -23,17 +29,22 @@ const emit = defineEmits({
   <li class="flex flex-col gap-2 p-4">
     <div class="flex items-center gap-2">
       <Button :type="BUTTON_TYPE_DANGER" @click="emit('delete')">
-        <TrashIcon class="h-8"/>
+        <TrashIcon class="h-8" />
       </Button>
-      <span class="truncate text-x1">{{activity.name}}</span>
+      <span class="truncate text-xl">{{ activity.name }}</span>
     </div>
-    <div>
-      <Select 
-        class="font-mono" 
-        :selected="activity.secondsToComplete || null" 
-        placeholder="hh:mm" 
+    <div class="flex gap-2">
+      <Select
+        class="grow font-mono"
+        placeholder="hh:mm"
         :options="PERIOD_SELECT_OPTIONS"
-        @select="emit('setSecondsToComplete' , $event || 0)" 
+        :selected="activity.secondsToComplete || null"
+        @select="emit('setSecondsToComplete', $event || 0)"
+      />
+      <ActivitySecondsToComplete
+        v-if="activity.secondsToComplete"
+        :activity="activity"
+        :timeline-items="timelineItems"
       />
     </div>
   </li>
