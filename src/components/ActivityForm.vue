@@ -1,18 +1,15 @@
 <script setup>
-import { ref, nextTick } from 'vue'
-import { PlusIcon } from '@heroicons/vue/24/solid'
+import { ref, inject, nextTick } from 'vue'
+import { PlusIcon } from '@heroicons/vue/24/outline'
 import { id } from '../functions'
-import Button from '../components/Button.vue'
-import { isActivityValid } from '../validators'
+import Button from './Button.vue'
 
-const emit = defineEmits({
-  submit: isActivityValid
-})
+const createActivity = inject('createActivity')
 
 const name = ref('')
 
 async function submit() {
-  emit('submit', {
+  createActivity({
     id: id(),
     name: name.value,
     secondsToComplete: 0
@@ -28,14 +25,14 @@ async function submit() {
 
 <template>
   <form @submit.prevent="submit" class="sticky bottom-[57px] flex gap-2 border-t bg-white p-4">
-    <input 
+    <input
       type="text"
       v-model="name"
+      class="w-full rounded border px-4 text-xl"
       placeholder="Activity name"
-      class="w-full rounded border px-4 text-x1"
-    >
+    />
     <Button :disabled="name.trim() === ''">
-      <PlusIcon class="h-8"/>
+      <PlusIcon class="h-8" />
     </Button>
   </form>
 </template>

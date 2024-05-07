@@ -2,19 +2,7 @@
 
 import { NAV_ITEMS } from '../constants'
 import NavItem from '../components/NavItem.vue'
-import { isPageValid } from '../validators'
-
-defineProps({
-  currentPage: {
-    required: true,
-    type: String,
-    validator: isPageValid
-  }
-})
-
-const emit = defineEmits({
-  navigate: isPageValid
-})
+import { currentPage, navigate } from '../route'
 
 </script>
 <template>
@@ -25,7 +13,7 @@ const emit = defineEmits({
         :key="page"
         :href="`#${page}`"
         :class="{ 'pointer-events-none bg-gray-200': page === currentPage }"
-        @click="emit('navigate', page)"
+        @click="navigate(page)"
       >
         <component :is="icon" class="h-6 w-6"/> {{page}}
       </NavItem>

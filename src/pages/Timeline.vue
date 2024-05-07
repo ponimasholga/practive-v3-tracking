@@ -1,31 +1,16 @@
 <script setup>
 import { ref, watchPostEffect, nextTick } from 'vue'
-import { PAGE_TIMELINE } from '../constants'
-import {
-  validateTimelineItems,
-  isTimelineItemValid,
-  isActivityValid,
-  isPageValid
-} from '../validators'
+import { PAGE_TIMELINE, MIDNIGHT_HOUR } from '../constants'
+import { validateTimelineItems } from '../validators'
 import TimelineItem from '../components/TimelineItem.vue'
+import { currentPage, timelineRef } from '../route'
 
-const props = defineProps({
+defineProps({
   timelineItems: {
     required: true,
     type: Array,
     validator: validateTimelineItems
   },
-  currentPage: {
-    required: true,
-    type: String,
-    validator: isPageValid
-  }
-})
-
-const emit = defineEmits({
-  setTimelineItemActivity(timelineItem, activity) {
-    return [isTimelineItemValid(timelineItem), isActivityValid(activity)].every(Boolean)
-  }
 })
 
 defineExpose({ scrollToHour })
@@ -33,7 +18,7 @@ defineExpose({ scrollToHour })
 const timelineItemRefs = ref([])
 
 watchPostEffect(async () => {
-  if (props.currentPage === PAGE_TIMELINE) {
+  if (currentPage.value === PAGE_TIMELINE) {
     await nextTick()
 
     scrollToHour(null, false)
@@ -43,13 +28,11 @@ watchPostEffect(async () => {
 function scrollToHour(hour = null, isSmooth = true) {
   hour ??= new Date().getHours()
 
-  const options = { behavior: isSmooth ? 'smooth' : 'instant' }
+  console.log("timelineItemRefs" , timelineItemRefs);
 
-  if (hour === 0) {
-    document.body.scrollIntoView(options)
-  } else {
-    timelineItemRefs.value[hour - 1].$el.scrollIntoView(options)
-  }
+  const el = hour === MIDNIGHT_HOUR ? document.body : timelineItemRefs.value[hour - 1].$el
+
+  el.scrollIntoView({ behavior: isSmooth ? 'smooth' : 'instant' })
 }
 </script>
 
@@ -62,7 +45,6 @@ function scrollToHour(hour = null, isSmooth = true) {
         :timeline-item="timelineItem"
         ref="timelineItemRefs"
         @scroll-to-hour="scrollToHour"
-        @select-activity="emit('setTimelineItemActivity', timelineItem, $event)"
       />
     </ul>
   </div>
