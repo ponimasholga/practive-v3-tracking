@@ -2,6 +2,7 @@
 import {computed, inject} from 'vue'
 import { formatSeconds, getTotalActivitySeconds } from '../functions'
 import { isActivityValid } from '../validators'
+import { timelineItemsKey } from '../keys'
 
 const props = defineProps({
   activity: {
@@ -15,7 +16,7 @@ const classes = computed(() =>
   `flex items-center rounded bg-purple-100 px-2 font-mono text-xl text-purple-600 ${colorClasses.value}`
 )
 
-const timelineItems = inject('timelineItems')
+const timelineItems = inject(timelineItemsKey)
 
 const colorClasses = computed(() => 
   secondsDiff.value < 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-red-600'
